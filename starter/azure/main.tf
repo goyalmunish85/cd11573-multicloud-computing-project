@@ -33,8 +33,8 @@ resource "azurerm_container_group" "udacity" {
 
 resource "azurerm_sql_server" "udacity" {
   name                         = "udacity-munishgoyal-azure-sql"
-  resource_group_name          = azurerm_resource_group.udacity.name
-  location                     = azurerm_resource_group.udacity.location
+  resource_group_name          = data.azurerm_resource_group.udacity.name
+  location                     = data.azurerm_resource_group.udacity.location
   version                      = "12.0"
   administrator_login          = "mradministrator"
   administrator_login_password = "thisIsDog11"
@@ -44,10 +44,21 @@ resource "azurerm_sql_server" "udacity" {
   }
 }
 
+resource "azurerm_app_service_plan" "udacity" {
+  name                = "udacity-munishgoyal-app-service-plan"
+  location            = data.azurerm_resource_group.udacity.location
+  resource_group_name = data.azurerm_resource_group.udacity.name
+
+  sku {
+    tier = "Standard"
+    size = "S1"
+  }
+}
+
 resource "azurerm_app_service" "udacity" {
   name                = "udacity-munishgoyal-azure-dotnet-app"
-  location            = azurerm_resource_group.udacity.location
-  resource_group_name = azurerm_resource_group.udacity.name
+  location            = data.azurerm_resource_group.udacity.location
+  resource_group_name = data.azurerm_resource_group.udacity.name
   app_service_plan_id = azurerm_app_service_plan.udacity.id
 
   site_config {
